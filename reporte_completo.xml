@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="estilo_javadrive.xsl"?>
+<javadrive>
+  <empresa>
+    <nombre>JavaDrive SL</nombre>
+    <ubicacion>Sede Central Madrid</ubicacion>
+  </empresa>
+  <flota>
+    <vehiculo tipo="Coche">
+      <matricula>1234ABC</matricula>
+      <marca_modelo>Seat Leon</marca_modelo>
+      <especificaciones>Coche Familiar, Plazas: 5</especificaciones>
+    </vehiculo>
+    <vehiculo tipo="Coche">
+      <matricula>5678DEF</matricula>
+      <marca_modelo>Fiat 500</marca_modelo>
+      <especificaciones>Coche Pequeño, Plazas: 4</especificaciones>
+    </vehiculo>
+    <vehiculo tipo="Furgoneta">
+      <matricula>1122JKL</matricula>
+      <marca_modelo>Ford Transit</marca_modelo>
+      <especificaciones>Furgoneta de Carga (1200 kg)</especificaciones>
+    </vehiculo>
+    <vehiculo tipo="Furgoneta">
+      <matricula>3344MNO</matricula>
+      <marca_modelo>Volkswagen Multivan</marca_modelo>
+      <especificaciones>Furgoneta de Pasajeros (7 personas)</especificaciones>
+    </vehiculo>
+  </flota>
+  <clientes>
+    <cliente>
+      <dni>12345678A</dni>
+      <nombre> Juan Perez</nombre>
+      <telefono> 600111222</telefono>
+    </cliente>
+    <cliente>
+      <dni>23456789B</dni>
+      <nombre> Maria Garcia</nombre>
+      <telefono> 611222333</telefono>
+    </cliente>
+  </clientes>
+</javadrive>

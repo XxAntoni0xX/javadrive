@@ -1,0 +1,12 @@
+===========================================
+CONTRATO DE ALQUILER JAVADRIVE
+ID RESERVA: R363700
+FECHA EMISIÓN: 2026-04-10
+DATOS DEL CLIENTE:
+Nombre:  Maria Garcia
+DNI: 23456789B
+DATOS DEL VEHÍCULO:
+Marca: Volkswagen Multivan
+Detalles: Furgoneta de Pasajeros (7 personas)
+PERIODO: 2026-04-10 al 2026-04-15 (5 días)
+===========================================
