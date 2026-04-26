@@ -1,11 +1,19 @@
 package test;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
+
+import model.Cliente; 
 
 public class JavaDriveTest {
+
     @Test
-    public void testInicial() {
-        assertTrue(true);
+    public void testCobertura() {
+        
+        Cliente c = new Cliente();
+        
+        
+        assertNotNull(c);
     }
 }
