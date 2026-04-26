@@ -12,9 +12,11 @@ public class JavaDriveTest {
     private GestorClientes gc;
     private GestorFlota gf;
     private Cliente c1;
+    private Cliente c2;
     private Coche cocheDisp;
     private Coche cocheNoDisp;
-    private Furgoneta furgoneta;
+    private Furgoneta furgonetaCarga;
+    private Furgoneta furgonetaPasajeros;
  
     @BeforeEach
     public void setUp() {
@@ -22,34 +24,56 @@ public class JavaDriveTest {
         gf = new GestorFlota();
  
         c1 = new Cliente("11111111A", "Antonio", "600000001");
+        c2 = new Cliente("22222222B", "Maria", "600000002");
         gc.addCliente(c1);
+        gc.addCliente(c2);
  
-        cocheDisp = new Coche("1234ABC", "Toyota", "Corolla", true, "Turismo", 5);
-        cocheNoDisp = new Coche("9999ZZZ", "Fiat", "500", false, "Urbano", 4);
-        furgoneta = new Furgoneta("FURG001", "Mercedes", "Sprinter", true, true, 1000);
+        cocheDisp    = new Coche("1234ABC", "Toyota",   "Corolla", true,  "Turismo", 5);
+        cocheNoDisp  = new Coche("9999ZZZ", "Fiat",     "500",     false, "Urbano",  4);
+        furgonetaCarga     = new Furgoneta("FURG001", "Mercedes", "Sprinter", true,  true,  1000);
+        furgonetaPasajeros = new Furgoneta("FURG002", "VW",       "Crafter",  true,  false, 9);
  
         gf.addVehiculo(cocheDisp);
         gf.addVehiculo(cocheNoDisp);
-        gf.addVehiculo(furgoneta);
+        gf.addVehiculo(furgonetaCarga);
+        gf.addVehiculo(furgonetaPasajeros);
     }
  
-    
+    // =====================
+    // Cliente
+    // =====================
  
     @Test
-    public void testClienteGetters() {
+    public void testClienteGetDni() {
         assertEquals("11111111A", c1.getDni());
+    }
+ 
+    @Test
+    public void testClienteGetNombre() {
         assertEquals("Antonio", c1.getNombre());
+    }
+ 
+    @Test
+    public void testClienteGetTelefono() {
         assertEquals("600000001", c1.getTelefono());
     }
  
     @Test
     public void testClienteToString() {
         String s = c1.toString();
-        assertNotNull(s);
         assertTrue(s.contains("Antonio"));
+        assertTrue(s.contains("11111111A"));
+        assertTrue(s.contains("600000001"));
     }
  
-   
+    // =====================
+    // GestorClientes
+    // =====================
+ 
+    @Test
+    public void testAddYGetClientes() {
+        assertEquals(2, gc.getClientes().size());
+    }
  
     @Test
     public void testBuscarClienteExistente() {
@@ -59,40 +83,48 @@ public class JavaDriveTest {
     }
  
     @Test
+    public void testBuscarClienteMayusculasMinusculas() {
+        // equalsIgnoreCase → debe encontrarlo aunque cambie el case
+        Cliente encontrado = gc.buscarCliente("11111111a");
+        assertNotNull(encontrado);
+    }
+ 
+    @Test
     public void testBuscarClienteNoExistente() {
-        Cliente noEncontrado = gc.buscarCliente("99999999Z");
-        assertNull(noEncontrado);
+        assertNull(gc.buscarCliente("99999999Z"));
     }
  
-    @Test
-    public void testGetClientes() {
-        assertEquals(1, gc.getClientes().size());
-    }
- 
-    
+    // =====================
+    // Vehiculo / Coche
+    // =====================
  
     @Test
-    public void testCocheGetters() {
+    public void testCocheGetMatricula() {
         assertEquals("1234ABC", cocheDisp.getMatricula());
+    }
+ 
+    @Test
+    public void testCocheGetMarca() {
         assertEquals("Toyota", cocheDisp.getMarca());
+    }
+ 
+    @Test
+    public void testCocheGetModelo() {
         assertEquals("Corolla", cocheDisp.getModelo());
+    }
+ 
+    @Test
+    public void testCocheIsDisponibleTrue() {
         assertTrue(cocheDisp.isDisponible());
     }
  
     @Test
-    public void testCocheNoDisponible() {
+    public void testCocheIsDisponibleFalse() {
         assertFalse(cocheNoDisp.isDisponible());
     }
  
     @Test
-    public void testCocheObtenerDetalles() {
-        String detalles = cocheDisp.obtenerDetalles();
-        assertNotNull(detalles);
-        assertTrue(detalles.contains("Coche"));
-    }
- 
-    @Test
-    public void testVehiculoSetDisponible() {
+    public void testCocheSetDisponible() {
         cocheDisp.setDisponible(false);
         assertFalse(cocheDisp.isDisponible());
         cocheDisp.setDisponible(true);
@@ -100,44 +132,79 @@ public class JavaDriveTest {
     }
  
     @Test
-    public void testVehiculoToString() {
+    public void testCocheObtenerDetalles() {
+        String detalles = cocheDisp.obtenerDetalles();
+        assertTrue(detalles.contains("Coche"));
+        assertTrue(detalles.contains("5"));
+    }
+ 
+    @Test
+    public void testCocheToStringDisponible() {
         String s = cocheDisp.toString();
-        assertNotNull(s);
         assertTrue(s.contains("1234ABC"));
+        assertTrue(s.contains("Disponible"));
     }
  
     @Test
-    public void testFurgonetaCarga() {
-        assertEquals("FURG001", furgoneta.getMatricula());
-        assertTrue(furgoneta.isDisponible());
-        String detalles = furgoneta.obtenerDetalles();
+    public void testCocheToStringReservado() {
+        String s = cocheNoDisp.toString();
+        assertTrue(s.contains("Reservado"));
+    }
+ 
+    // =====================
+    // Furgoneta
+    // =====================
+ 
+    @Test
+    public void testFurgonetaCargaGetters() {
+        assertEquals("FURG001", furgonetaCarga.getMatricula());
+        assertEquals("Mercedes", furgonetaCarga.getMarca());
+        assertEquals("Sprinter", furgonetaCarga.getModelo());
+        assertTrue(furgonetaCarga.isDisponible());
+    }
+ 
+    @Test
+    public void testFurgonetaObtenerDetallesCarga() {
+        String detalles = furgonetaCarga.obtenerDetalles();
         assertTrue(detalles.contains("Carga"));
+        assertTrue(detalles.contains("1000"));
     }
  
     @Test
-    public void testFurgonetaPasajeros() {
-        Furgoneta fp = new Furgoneta("FURG002", "VW", "Crafter", true, false, 9);
-        String detalles = fp.obtenerDetalles();
+    public void testFurgonetaObtenerDetallesPasajeros() {
+        String detalles = furgonetaPasajeros.obtenerDetalles();
         assertTrue(detalles.contains("Pasajeros"));
+        assertTrue(detalles.contains("9"));
     }
  
-   
+    @Test
+    public void testFurgonetaToString() {
+        String s = furgonetaCarga.toString();
+        assertTrue(s.contains("FURG001"));
+    }
+ 
+    // =====================
+    // GestorFlota
+    // =====================
+ 
+    @Test
+    public void testGetFlota() {
+        assertEquals(4, gf.getFlota().size());
+    }
  
     @Test
     public void testBuscarVehiculoExistente() {
-        Vehiculo v = gf.buscarVehiculo("1234ABC");
-        assertNotNull(v);
+        assertNotNull(gf.buscarVehiculo("1234ABC"));
+    }
+ 
+    @Test
+    public void testBuscarVehiculoMayusculasMinusculas() {
+        assertNotNull(gf.buscarVehiculo("1234abc"));
     }
  
     @Test
     public void testBuscarVehiculoNoExistente() {
-        Vehiculo v = gf.buscarVehiculo("XXXXXXX");
-        assertNull(v);
-    }
- 
-    @Test
-    public void testGetFlota() {
-        assertEquals(3, gf.getFlota().size());
+        assertNull(gf.buscarVehiculo("XXXXXXX"));
     }
  
     @Test
@@ -145,65 +212,123 @@ public class JavaDriveTest {
         assertDoesNotThrow(() -> gf.listarDisponibles());
     }
  
-    
+    // =====================
+    // Reserva
+    // =====================
  
     @Test
-    public void testReservaCreacion() {
-        LocalDate hoy = LocalDate.now();
-        Reserva r = new Reserva(c1, cocheDisp, hoy, hoy.plusDays(3));
+    public void testReservaNoNula() {
+        Reserva r = new Reserva(c1, cocheDisp, LocalDate.now(), LocalDate.now().plusDays(3));
         assertNotNull(r);
     }
  
     @Test
-    public void testReservaGenerarTicket() {
-        LocalDate hoy = LocalDate.now();
-        Reserva r = new Reserva(c1, cocheDisp, hoy, hoy.plusDays(3));
+    public void testReservaGenerarTicketContieneNombre() {
+        Reserva r = new Reserva(c1, cocheDisp, LocalDate.now(), LocalDate.now().plusDays(3));
         String ticket = r.generarLineaTicket();
-        assertNotNull(ticket);
-        assertTrue(ticket.contains("JAVADRIVE"));
         assertTrue(ticket.contains("Antonio"));
     }
  
-    
+    @Test
+    public void testReservaGenerarTicketContieneDni() {
+        Reserva r = new Reserva(c1, cocheDisp, LocalDate.now(), LocalDate.now().plusDays(3));
+        assertTrue(r.generarLineaTicket().contains("11111111A"));
+    }
+ 
+    @Test
+    public void testReservaGenerarTicketContieneMatricula() {
+        Reserva r = new Reserva(c1, cocheDisp, LocalDate.now(), LocalDate.now().plusDays(3));
+        assertTrue(r.generarLineaTicket().contains("1234ABC"));
+    }
+ 
+    @Test
+    public void testReservaGenerarTicketContieneJavaDrive() {
+        Reserva r = new Reserva(c1, cocheDisp, LocalDate.now(), LocalDate.now().plusDays(5));
+        assertTrue(r.generarLineaTicket().contains("JAVADRIVE"));
+    }
+ 
+    @Test
+    public void testReservaConFurgoneta() {
+        Reserva r = new Reserva(c2, furgonetaCarga, LocalDate.now(), LocalDate.now().plusDays(1));
+        String ticket = r.generarLineaTicket();
+        assertTrue(ticket.contains("Maria"));
+        assertTrue(ticket.contains("FURG001"));
+    }
+ 
+    // =====================
+    // GestorReservas
+    // =====================
  
     @Test
     public void testProcesarReservaExitosa() {
         GestorReservas gr = new GestorReservas();
-        boolean resultado = gr.procesarReserva(c1, cocheDisp);
-        assertTrue(resultado);
-        assertFalse(cocheDisp.isDisponible());
+        assertTrue(gr.procesarReserva(c1, cocheDisp));
+        assertFalse(cocheDisp.isDisponible()); // marca como no disponible
     }
  
     @Test
     public void testProcesarReservaClienteNulo() {
         GestorReservas gr = new GestorReservas();
-        boolean resultado = gr.procesarReserva(null, cocheDisp);
-        assertFalse(resultado);
+        assertFalse(gr.procesarReserva(null, cocheDisp));
+    }
+ 
+    @Test
+    public void testProcesarReservaVehiculoNulo() {
+        GestorReservas gr = new GestorReservas();
+        assertFalse(gr.procesarReserva(c1, null));
     }
  
     @Test
     public void testProcesarReservaVehiculoNoDisponible() {
         GestorReservas gr = new GestorReservas();
-        boolean resultado = gr.procesarReserva(c1, cocheNoDisp);
-        assertFalse(resultado);
+        assertFalse(gr.procesarReserva(c1, cocheNoDisp));
     }
  
-    
+    @Test
+    public void testProcesarReservaAmbosNulos() {
+        GestorReservas gr = new GestorReservas();
+        assertFalse(gr.procesarReserva(null, null));
+    }
+ 
+    // =====================
+    // GestorInformes
+    // =====================
  
     @Test
-    public void testGenerarInformeXML() {
+    public void testGenerarInformeXMLSinExcepcion() {
         assertDoesNotThrow(() ->
             GestorInformes.generarInformeXML(gf.getFlota(), gc.getClientes())
         );
     }
  
-    
+    @Test
+    public void testGenerarInformeXMLListasVacias() {
+        assertDoesNotThrow(() ->
+            GestorInformes.generarInformeXML(
+                new GestorFlota().getFlota(),
+                new GestorClientes().getClientes()
+            )
+        );
+    }
+ 
+    @Test
+    public void testGenerarInformeXMLConFurgoneta() {
+        GestorFlota gfSolo = new GestorFlota();
+        gfSolo.addVehiculo(furgonetaCarga);
+        assertDoesNotThrow(() ->
+            GestorInformes.generarInformeXML(gfSolo.getFlota(), gc.getClientes())
+        );
+    }
+ 
+    // =====================
+    // GestorPersistencia
+    // =====================
  
     @Test
     public void testCargarDatosSinFicheros() {
         GestorPersistencia gp = new GestorPersistencia();
-        GestorFlota gfVacio = new GestorFlota();
-        GestorClientes gcVacio = new GestorClientes();
-        assertDoesNotThrow(() -> gp.cargarDatos(gfVacio, gcVacio));
+        assertDoesNotThrow(() ->
+            gp.cargarDatos(new GestorFlota(), new GestorClientes())
+        );
     }
 }
