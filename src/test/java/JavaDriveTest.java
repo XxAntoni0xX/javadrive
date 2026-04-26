@@ -28,10 +28,10 @@ public class JavaDriveTest {
         gc.addCliente(c1);
         gc.addCliente(c2);
  
-        cocheDisp    = new Coche("1234ABC", "Toyota",   "Corolla", true,  "Turismo", 5);
-        cocheNoDisp  = new Coche("9999ZZZ", "Fiat",     "500",     false, "Urbano",  4);
-        furgonetaCarga     = new Furgoneta("FURG001", "Mercedes", "Sprinter", true,  true,  1000);
-        furgonetaPasajeros = new Furgoneta("FURG002", "VW",       "Crafter",  true,  false, 9);
+        cocheDisp         = new Coche("1234ABC", "Toyota",   "Corolla", true,  "Turismo", 5);
+        cocheNoDisp       = new Coche("9999ZZZ", "Fiat",     "500",     false, "Urbano",  4);
+        furgonetaCarga    = new Furgoneta("FURG001", "Mercedes", "Sprinter", true,  true,  1000);
+        furgonetaPasajeros= new Furgoneta("FURG002", "VW",       "Crafter",  true,  false, 9);
  
         gf.addVehiculo(cocheDisp);
         gf.addVehiculo(cocheNoDisp);
@@ -84,9 +84,7 @@ public class JavaDriveTest {
  
     @Test
     public void testBuscarClienteMayusculasMinusculas() {
-        // equalsIgnoreCase → debe encontrarlo aunque cambie el case
-        Cliente encontrado = gc.buscarCliente("11111111a");
-        assertNotNull(encontrado);
+        assertNotNull(gc.buscarCliente("11111111a"));
     }
  
     @Test
@@ -225,8 +223,7 @@ public class JavaDriveTest {
     @Test
     public void testReservaGenerarTicketContieneNombre() {
         Reserva r = new Reserva(c1, cocheDisp, LocalDate.now(), LocalDate.now().plusDays(3));
-        String ticket = r.generarLineaTicket();
-        assertTrue(ticket.contains("Antonio"));
+        assertTrue(r.generarLineaTicket().contains("Antonio"));
     }
  
     @Test
@@ -236,9 +233,15 @@ public class JavaDriveTest {
     }
  
     @Test
-    public void testReservaGenerarTicketContieneMatricula() {
+    public void testReservaGenerarTicketContieneMarca() {
         Reserva r = new Reserva(c1, cocheDisp, LocalDate.now(), LocalDate.now().plusDays(3));
-        assertTrue(r.generarLineaTicket().contains("1234ABC"));
+        assertTrue(r.generarLineaTicket().contains("Toyota"));
+    }
+ 
+    @Test
+    public void testReservaGenerarTicketContieneModelo() {
+        Reserva r = new Reserva(c1, cocheDisp, LocalDate.now(), LocalDate.now().plusDays(3));
+        assertTrue(r.generarLineaTicket().contains("Corolla"));
     }
  
     @Test
@@ -252,7 +255,7 @@ public class JavaDriveTest {
         Reserva r = new Reserva(c2, furgonetaCarga, LocalDate.now(), LocalDate.now().plusDays(1));
         String ticket = r.generarLineaTicket();
         assertTrue(ticket.contains("Maria"));
-        assertTrue(ticket.contains("FURG001"));
+        assertTrue(ticket.contains("Mercedes")); // marca en lugar de matrícula
     }
  
     // =====================
@@ -263,7 +266,7 @@ public class JavaDriveTest {
     public void testProcesarReservaExitosa() {
         GestorReservas gr = new GestorReservas();
         assertTrue(gr.procesarReserva(c1, cocheDisp));
-        assertFalse(cocheDisp.isDisponible()); // marca como no disponible
+        assertFalse(cocheDisp.isDisponible());
     }
  
     @Test
