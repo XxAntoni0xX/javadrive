@@ -2,7 +2,11 @@ package test;
  
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import model.*;
 import logica.*;
@@ -18,18 +22,22 @@ public class JavaDriveTest {
     private Furgoneta furgonetaCarga;
     private Furgoneta furgonetaPasajeros;
  
+    // Ficheros temporales que crea GestorPersistencia
+    private static final String FICHERO_CLIENTES  = "clientes.txt";
+    private static final String FICHERO_VEHICULOS = "vehiculos.txt";
+ 
     @BeforeEach
     public void setUp() {
         gc = new GestorClientes();
         gf = new GestorFlota();
  
         c1 = new Cliente("11111111A", "Antonio", "600000001");
-        c2 = new Cliente("22222222B", "Maria", "600000002");
+        c2 = new Cliente("22222222B", "Maria",   "600000002");
         gc.addCliente(c1);
         gc.addCliente(c2);
  
-        cocheDisp         = new Coche("1234ABC", "Toyota",   "Corolla", true,  "Turismo", 5);
-        cocheNoDisp       = new Coche("9999ZZZ", "Fiat",     "500",     false, "Urbano",  4);
+        cocheDisp         = new Coche("1234ABC",  "Toyota",   "Corolla",  true,  "Turismo", 5);
+        cocheNoDisp       = new Coche("9999ZZZ",  "Fiat",     "500",      false, "Urbano",  4);
         furgonetaCarga    = new Furgoneta("FURG001", "Mercedes", "Sprinter", true,  true,  1000);
         furgonetaPasajeros= new Furgoneta("FURG002", "VW",       "Crafter",  true,  false, 9);
  
@@ -37,6 +45,16 @@ public class JavaDriveTest {
         gf.addVehiculo(cocheNoDisp);
         gf.addVehiculo(furgonetaCarga);
         gf.addVehiculo(furgonetaPasajeros);
+    }
+ 
+    @AfterEach
+    public void tearDown() {
+        // Limpiar ficheros temporales creados durante los tests
+        new File(FICHERO_CLIENTES).delete();
+        new File(FICHERO_VEHICULOS).delete();
+        new File("reporte_completo.xml").delete();
+        new File("ticket_1234ABC.txt").delete();
+        new File("ticket_FURG001.txt").delete();
     }
  
     // =====================
@@ -145,8 +163,7 @@ public class JavaDriveTest {
  
     @Test
     public void testCocheToStringReservado() {
-        String s = cocheNoDisp.toString();
-        assertTrue(s.contains("Reservado"));
+        assertTrue(cocheNoDisp.toString().contains("Reservado"));
     }
  
     // =====================
@@ -177,8 +194,7 @@ public class JavaDriveTest {
  
     @Test
     public void testFurgonetaToString() {
-        String s = furgonetaCarga.toString();
-        assertTrue(s.contains("FURG001"));
+        assertTrue(furgonetaCarga.toString().contains("FURG001"));
     }
  
     // =====================
@@ -216,36 +232,35 @@ public class JavaDriveTest {
  
     @Test
     public void testReservaNoNula() {
-        Reserva r = new Reserva(c1, cocheDisp, LocalDate.now(), LocalDate.now().plusDays(3));
-        assertNotNull(r);
+        assertNotNull(new Reserva(c1, cocheDisp, LocalDate.now(), LocalDate.now().plusDays(3)));
     }
  
     @Test
-    public void testReservaGenerarTicketContieneNombre() {
+    public void testReservaTicketContieneNombre() {
         Reserva r = new Reserva(c1, cocheDisp, LocalDate.now(), LocalDate.now().plusDays(3));
         assertTrue(r.generarLineaTicket().contains("Antonio"));
     }
  
     @Test
-    public void testReservaGenerarTicketContieneDni() {
+    public void testReservaTicketContieneDni() {
         Reserva r = new Reserva(c1, cocheDisp, LocalDate.now(), LocalDate.now().plusDays(3));
         assertTrue(r.generarLineaTicket().contains("11111111A"));
     }
  
     @Test
-    public void testReservaGenerarTicketContieneMarca() {
+    public void testReservaTicketContieneMarca() {
         Reserva r = new Reserva(c1, cocheDisp, LocalDate.now(), LocalDate.now().plusDays(3));
         assertTrue(r.generarLineaTicket().contains("Toyota"));
     }
  
     @Test
-    public void testReservaGenerarTicketContieneModelo() {
+    public void testReservaTicketContieneModelo() {
         Reserva r = new Reserva(c1, cocheDisp, LocalDate.now(), LocalDate.now().plusDays(3));
         assertTrue(r.generarLineaTicket().contains("Corolla"));
     }
  
     @Test
-    public void testReservaGenerarTicketContieneJavaDrive() {
+    public void testReservaTicketContieneJavaDrive() {
         Reserva r = new Reserva(c1, cocheDisp, LocalDate.now(), LocalDate.now().plusDays(5));
         assertTrue(r.generarLineaTicket().contains("JAVADRIVE"));
     }
@@ -255,7 +270,7 @@ public class JavaDriveTest {
         Reserva r = new Reserva(c2, furgonetaCarga, LocalDate.now(), LocalDate.now().plusDays(1));
         String ticket = r.generarLineaTicket();
         assertTrue(ticket.contains("Maria"));
-        assertTrue(ticket.contains("Mercedes")); // marca en lugar de matrícula
+        assertTrue(ticket.contains("Mercedes"));
     }
  
     // =====================
@@ -271,26 +286,22 @@ public class JavaDriveTest {
  
     @Test
     public void testProcesarReservaClienteNulo() {
-        GestorReservas gr = new GestorReservas();
-        assertFalse(gr.procesarReserva(null, cocheDisp));
+        assertFalse(new GestorReservas().procesarReserva(null, cocheDisp));
     }
  
     @Test
     public void testProcesarReservaVehiculoNulo() {
-        GestorReservas gr = new GestorReservas();
-        assertFalse(gr.procesarReserva(c1, null));
+        assertFalse(new GestorReservas().procesarReserva(c1, null));
     }
  
     @Test
     public void testProcesarReservaVehiculoNoDisponible() {
-        GestorReservas gr = new GestorReservas();
-        assertFalse(gr.procesarReserva(c1, cocheNoDisp));
+        assertFalse(new GestorReservas().procesarReserva(c1, cocheNoDisp));
     }
  
     @Test
     public void testProcesarReservaAmbosNulos() {
-        GestorReservas gr = new GestorReservas();
-        assertFalse(gr.procesarReserva(null, null));
+        assertFalse(new GestorReservas().procesarReserva(null, null));
     }
  
     // =====================
@@ -298,7 +309,7 @@ public class JavaDriveTest {
     // =====================
  
     @Test
-    public void testGenerarInformeXMLSinExcepcion() {
+    public void testGenerarInformeXMLCompleto() {
         assertDoesNotThrow(() ->
             GestorInformes.generarInformeXML(gf.getFlota(), gc.getClientes())
         );
@@ -315,7 +326,7 @@ public class JavaDriveTest {
     }
  
     @Test
-    public void testGenerarInformeXMLConFurgoneta() {
+    public void testGenerarInformeXMLSoloFurgoneta() {
         GestorFlota gfSolo = new GestorFlota();
         gfSolo.addVehiculo(furgonetaCarga);
         assertDoesNotThrow(() ->
@@ -324,14 +335,84 @@ public class JavaDriveTest {
     }
  
     // =====================
-    // GestorPersistencia
+    // GestorPersistencia — sin ficheros
     // =====================
  
     @Test
     public void testCargarDatosSinFicheros() {
-        GestorPersistencia gp = new GestorPersistencia();
         assertDoesNotThrow(() ->
-            gp.cargarDatos(new GestorFlota(), new GestorClientes())
+            new GestorPersistencia().cargarDatos(new GestorFlota(), new GestorClientes())
         );
+    }
+ 
+    // =====================
+    // GestorPersistencia — CON ficheros (cubre las ramas del if exists)
+    // =====================
+ 
+    @Test
+    public void testCargarClientesDesdefichero() throws IOException {
+        // Crear clientes.txt temporal con un cliente válido
+        try (FileWriter fw = new FileWriter(FICHERO_CLIENTES)) {
+            fw.write("Pedro;33333333C;600000003\n");
+        }
+        GestorClientes gcCargado = new GestorClientes();
+        GestorFlota gfCargado = new GestorFlota();
+        new GestorPersistencia().cargarDatos(gfCargado, gcCargado);
+        assertEquals(1, gcCargado.getClientes().size());
+        assertEquals("Pedro", gcCargado.getClientes().get(0).getNombre());
+    }
+ 
+    @Test
+    public void testCargarClientesFicheroLineaIncompleta() throws IOException {
+        // Línea con solo 2 campos — debe ignorarse (datos.length != 3)
+        try (FileWriter fw = new FileWriter(FICHERO_CLIENTES)) {
+            fw.write("SoloUnCampo\n");
+            fw.write("Dos;Campos\n");
+        }
+        GestorClientes gcCargado = new GestorClientes();
+        assertDoesNotThrow(() ->
+            new GestorPersistencia().cargarDatos(gfCargado(gcCargado), gcCargado)
+        );
+        assertEquals(0, gcCargado.getClientes().size());
+    }
+ 
+    @Test
+    public void testCargarVehiculosCocheDesdefichero() throws IOException {
+        // Crear vehiculos.txt con un coche
+        try (FileWriter fw = new FileWriter(FICHERO_VEHICULOS)) {
+            fw.write("COCHE;AAA111;Seat;Ibiza;true;Turismo;5\n");
+        }
+        GestorFlota gfCargado = new GestorFlota();
+        new GestorPersistencia().cargarDatos(gfCargado, new GestorClientes());
+        assertEquals(1, gfCargado.getFlota().size());
+        assertEquals("AAA111", gfCargado.getFlota().get(0).getMatricula());
+    }
+ 
+    @Test
+    public void testCargarVehiculosFurgonetaDesdefichero() throws IOException {
+        // Crear vehiculos.txt con una furgoneta
+        try (FileWriter fw = new FileWriter(FICHERO_VEHICULOS)) {
+            fw.write("FURGONETA;BBB222;Renault;Master;true;true;800\n");
+        }
+        GestorFlota gfCargado = new GestorFlota();
+        new GestorPersistencia().cargarDatos(gfCargado, new GestorClientes());
+        assertEquals(1, gfCargado.getFlota().size());
+        assertEquals("BBB222", gfCargado.getFlota().get(0).getMatricula());
+    }
+ 
+    @Test
+    public void testCargarVehiculosFicheroMalformado() throws IOException {
+        // Línea malformada — debe capturar la excepción internamente sin lanzar
+        try (FileWriter fw = new FileWriter(FICHERO_VEHICULOS)) {
+            fw.write("TIPO_INVALIDO;XXX;marcaX;modeloX;true\n");
+        }
+        assertDoesNotThrow(() ->
+            new GestorPersistencia().cargarDatos(new GestorFlota(), new GestorClientes())
+        );
+    }
+ 
+    // Método auxiliar para el test de línea incompleta
+    private GestorFlota gfCargado(GestorClientes gcCargado) {
+        return new GestorFlota();
     }
 }
