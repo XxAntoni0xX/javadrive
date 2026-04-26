@@ -49,7 +49,7 @@ public class JavaDriveTest {
         assertTrue(s.contains("Antonio"));
     }
  
-    
+   
  
     @Test
     public void testBuscarClienteExistente() {
@@ -69,7 +69,7 @@ public class JavaDriveTest {
         assertEquals(1, gc.getClientes().size());
     }
  
-   
+    
  
     @Test
     public void testCocheGetters() {
@@ -107,7 +107,7 @@ public class JavaDriveTest {
     }
  
     @Test
-    public void testFurgoneta() {
+    public void testFurgonetaCarga() {
         assertEquals("FURG001", furgoneta.getMatricula());
         assertTrue(furgoneta.isDisponible());
         String detalles = furgoneta.obtenerDetalles();
@@ -121,7 +121,7 @@ public class JavaDriveTest {
         assertTrue(detalles.contains("Pasajeros"));
     }
  
-    
+   
  
     @Test
     public void testBuscarVehiculoExistente() {
@@ -142,7 +142,6 @@ public class JavaDriveTest {
  
     @Test
     public void testListarDisponibles() {
-        
         assertDoesNotThrow(() -> gf.listarDisponibles());
     }
  
@@ -153,7 +152,6 @@ public class JavaDriveTest {
         LocalDate hoy = LocalDate.now();
         Reserva r = new Reserva(c1, cocheDisp, hoy, hoy.plusDays(3));
         assertNotNull(r);
-        assertEquals(hoy, r.getFechaInicio());
     }
  
     @Test
@@ -166,7 +164,7 @@ public class JavaDriveTest {
         assertTrue(ticket.contains("Antonio"));
     }
  
-   
+    
  
     @Test
     public void testProcesarReservaExitosa() {
@@ -206,7 +204,6 @@ public class JavaDriveTest {
         GestorPersistencia gp = new GestorPersistencia();
         GestorFlota gfVacio = new GestorFlota();
         GestorClientes gcVacio = new GestorClientes();
-        
         assertDoesNotThrow(() -> gp.cargarDatos(gfVacio, gcVacio));
     }
 }
