@@ -10,10 +10,10 @@ public class JavaDriveTest {
 
     @Test
     public void testCobertura() {
+       
+        Cliente c = new Cliente("Nombre", "DNI", "Telefono");
         
-        Cliente c = new Cliente();
-        
-        
+       
         assertNotNull(c);
     }
 }
