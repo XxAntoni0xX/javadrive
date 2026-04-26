@@ -4,16 +4,30 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-import model.Cliente; 
+import model.*;
+import logica.*;
 
 public class JavaDriveTest {
 
     @Test
-    public void testCobertura() {
-       
-        Cliente c = new Cliente("Nombre", "DNI", "Telefono");
+    public void testCoberturaTotal() {
         
-       
-        assertNotNull(c);
+        Cliente cliente = new Cliente("Antonio", "12345678Z", "600000000");
+        assertNotNull(cliente);
+
+        
+        Coche coche = new Coche(); 
+        assertNotNull(coche);
+
+        
+        GestorClientes gc = new GestorClientes();
+        GestorFlota gf = new GestorFlota();
+        GestorReservas gr = new GestorReservas();
+
+        assertNotNull(gc);
+        assertNotNull(gf);
+        assertNotNull(gr);
+        
+        
     }
 }
