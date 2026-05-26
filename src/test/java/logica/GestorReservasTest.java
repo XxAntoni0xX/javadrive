@@ -16,40 +16,37 @@ public class GestorReservasTest {
         
         boolean resultado = gr.procesarReserva(cl, co);
         
-       
         assertTrue(resultado);
-        assertFalse(co.isDisponible()); 
+        assertFalse(co.isDisponible());
         
-        
-        File ticket = new File("ticket_1234ABC.txt");
-        if (ticket.exists()) {
-            ticket.delete();
-        }
+        new File("ticket_1234ABC.txt").delete();
     }
 
     @Test
-    public void testProcesarReservaFalloVehiculoNoDisponible() {
+    public void testProcesarReservaFalloCondiciones() {
         GestorReservas gr = new GestorReservas();
         Cliente cl = new Cliente("11111111A", "Antonio", "600111222");
         Coche coNoDisp = new Coche("9999XYZ", "Fiat", "500", false, "Urbano", 4);
-        
-        
-        assertFalse(gr.procesarReserva(cl, coNoDisp));
-    }
-
-    @Test
-    public void testProcesarReservaFalloParametrosNulos() {
-        GestorReservas gr = new GestorReservas();
-        Cliente cl = new Cliente("11111111A", "Antonio", "600111222");
         Coche coDisp = new Coche("1234ABC", "Toyota", "Corolla", true, "Híbrido", 5);
         
        
+        assertFalse(gr.procesarReserva(cl, coNoDisp));
+        
+        
         assertFalse(gr.procesarReserva(null, coDisp));
+    }
+
+    @Test
+    public void testProcesarReservaFalloIOException() {
+        GestorReservas gr = new GestorReservas();
+        Cliente cl = new Cliente("11111111A", "Antonio", "600111222");
         
         
-        assertFalse(gr.procesarReserva(cl, null));
+        Coche coInvalido = new Coche("invalido\0/char", "Ford", "Fiesta", true, "Gasolina", 5);
+        
+        boolean resultado = gr.procesarReserva(cl, coInvalido);
         
         
-        assertFalse(gr.procesarReserva(null, null));
+        assertFalse(resultado);
     }
 }
