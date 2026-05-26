@@ -13,12 +13,12 @@ public class GestorClientesTest {
         
         gc.addCliente(cliente);
         
-        // Comprobar que busca bien
+        
         Cliente encontrado = gc.buscarCliente("11111111A");
         assertNotNull(encontrado);
         assertEquals("Antonio", encontrado.getNombre());
         
-        // Comprobar que devuelve null si no existe
+        
         assertNull(gc.buscarCliente("22222222B"));
     }
 
